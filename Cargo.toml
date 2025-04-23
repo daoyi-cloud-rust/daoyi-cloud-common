@@ -1,6 +1,6 @@
 [package]
 name = "daoyi-cloud-common"
-version = "0.1.7"
+version = "0.1.8"
 edition = "2024"
 description = "Common library for Daoyi Cloud"
 license = "MIT"
@@ -9,7 +9,7 @@ license = "MIT"
 # 完整功能
 full = ["web", "gateway", "module-system"]
 # 默认功能
-default = ["web"]
+default = []
 # web功能
 web = ["salvo", "tokio", "tracing", "tracing-subscriber"]
 # 系统管理功能
