@@ -1,8 +1,7 @@
 pub mod constants;
-pub use salvo::prelude::*;
-pub use tracing_subscriber;
-pub use tokio;
-pub use tracing;
+
+#[cfg(feature = "web")]
+pub mod web;
 
 pub fn add(left: u64, right: u64) -> u64 {
     left + right
