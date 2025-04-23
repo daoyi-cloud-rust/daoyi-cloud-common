@@ -1,10 +1,10 @@
 pub mod constants;
 
 #[cfg(feature = "web")]
-pub mod web;
+mod web;
 
 #[cfg(feature = "gateway")]
-pub mod gateway;
+mod gateway;
 
 pub mod module;
 
