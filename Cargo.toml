@@ -6,3 +6,7 @@ description = "Common library for Daoyi Cloud"
 license = "MIT"
 
 [dependencies]
+salvo = { version = "0.78.0", features = ["full"] }
+tokio = { version = "1.44.2", features = ["macros"] }
+tracing = "0.1.41"
+tracing-subscriber = "0.3.19"
