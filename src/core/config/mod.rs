@@ -46,6 +46,7 @@ pub struct ServerConfig {
     #[serde(default = "default_listen_addr")]
     pub listen_addr: String,
 
+    #[serde(default = "default_db_config")]
     pub db: DbConfig,
     pub log: LogConfig,
     pub jwt: JwtConfig,
@@ -74,4 +75,17 @@ pub fn default_true() -> bool {
 
 fn default_listen_addr() -> String {
     "127.0.0.1:8008".into()
+}
+
+fn default_db_config() -> DbConfig {
+    DbConfig {
+        url: "".into(),
+        pool_size: 10,
+        min_idle: None,
+        tcp_timeout: 10000,
+        connection_timeout: 30000,
+        statement_timeout: 30000,
+        helper_threads: 10,
+        enforce_tls: false,
+    }
 }
