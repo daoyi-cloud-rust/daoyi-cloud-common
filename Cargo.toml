@@ -1,6 +1,6 @@
 [package]
 name = "daoyi-cloud-common"
-version = "0.2.4"
+version = "0.2.5"
 edition = "2024"
 description = "Common library for Daoyi Cloud"
 license = "MIT"
@@ -17,9 +17,6 @@ full = [
 default = [
     "salvo",
     "tokio",
-    "tracing",
-    "tracing-appender",
-    "tracing-subscriber",
     "thiserror",
     "anyhow",
     "rbatis",
@@ -41,9 +38,9 @@ db = []
 [dependencies]
 salvo = { version = "0.78.0", features = ["full"], optional = true }
 tokio = { version = "1.44.2", features = ["macros"], optional = true }
-tracing = { version = "0.1.41", optional = true }
-tracing-appender = { version = "0.2.3", optional = true }
-tracing-subscriber = { version = "0.3.19", features = ["std", "fmt", "env-filter", "tracing-log", "time", "local-time", "json"], optional = true }
+tracing = { version = "0.1.41" }
+tracing-appender = { version = "0.2.3" }
+tracing-subscriber = { version = "0.3.19", features = ["std", "fmt", "env-filter", "tracing-log", "time", "local-time", "json", "chrono"] }
 thiserror = { version = "2.0.12", optional = true }
 anyhow = { version = "1.0.98", optional = true }
 rbatis = { version = "4.5.50", optional = true }
@@ -52,3 +49,4 @@ figment = { version = "0.10.19", features = ["env", "toml"], optional = true }
 serde = { version = "1.0.219", optional = true }
 rbs = { version = "4.5.25", optional = true }
 rbdc-mysql = { version = "4.5.17", optional = true }
+time = "0.3.41"  # 时区支持库

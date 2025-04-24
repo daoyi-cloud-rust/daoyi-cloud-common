@@ -48,12 +48,15 @@ pub struct ServerConfig {
 
     #[serde(default = "default_db_config")]
     pub db: DbConfig,
+    #[serde(default)]
     pub log: LogConfig,
+    #[serde(default)]
     pub jwt: JwtConfig,
     pub tls: Option<TlsConfig>,
 }
 
 #[derive(Deserialize, Clone, Debug)]
+#[derive(Default)]
 pub struct JwtConfig {
     pub secret: String,
     pub expiry: i64,

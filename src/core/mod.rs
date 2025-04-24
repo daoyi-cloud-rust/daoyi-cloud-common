@@ -13,6 +13,11 @@ use crate::core::config::init;
 pub async fn app_init(config: Option<AppInitConfig>) -> Result<(), Box<dyn std::error::Error>> {
     // tracing_subscriber::fmt().init();
     init(config.unwrap_or_default().config);
+    let config = config::get();
+    // crate::db::init(&config.db).await;
+
+    let _guard = config.log.guard();
+    info!("log level: {}", &config.log.filter_level);
     info!("{} app_init...finish...", APP_NAME);
     Ok(())
 }
