@@ -43,6 +43,9 @@ pub fn get() -> &'static ServerConfig {
 
 #[derive(Deserialize, Clone, Debug)]
 pub struct ServerConfig {
+    #[serde(default = "default_profile_active")]
+    pub profile_active: String,
+    
     #[serde(default = "default_listen_addr")]
     pub listen_addr: String,
 
@@ -67,6 +70,10 @@ pub struct TlsConfig {
     pub key: String,
 }
 
+#[allow(dead_code)]
+fn default_profile_active() -> String {
+    "dev".into()
+}
 #[allow(dead_code)]
 pub fn default_false() -> bool {
     false

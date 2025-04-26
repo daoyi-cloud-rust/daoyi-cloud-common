@@ -1,6 +1,6 @@
 [package]
 name = "daoyi-cloud-common"
-version = "0.2.5"
+version = "0.2.6"
 edition = "2024"
 description = "Common library for Daoyi Cloud"
 license = "MIT"
@@ -25,6 +25,13 @@ default = [
     "serde",
     "rbs",
     "rbdc-mysql",
+    "jsonwebtoken",
+    "rust-embed",
+    "ulid",
+    "argon2",
+    "cookie",
+    "dotenvy",
+    "rand",
 ]
 # web功能
 web = []
@@ -37,7 +44,7 @@ db = []
 
 [dependencies]
 salvo = { version = "0.78.0", features = ["full"], optional = true }
-tokio = { version = "1.44.2", features = ["macros"], optional = true }
+tokio = { version = "1.44.2", features = ["full"], optional = true }
 tracing = { version = "0.1.41" }
 tracing-appender = { version = "0.2.3" }
 tracing-subscriber = { version = "0.3.19", features = ["std", "fmt", "env-filter", "tracing-log", "time", "local-time", "json", "chrono"] }
@@ -50,3 +57,10 @@ serde = { version = "1.0.219", optional = true }
 rbs = { version = "4.5.25", optional = true }
 rbdc-mysql = { version = "4.5.17", optional = true }
 time = "0.3.41"  # 时区支持库
+jsonwebtoken = { version = "9.3.1", optional = true }
+rust-embed = { version = "8.7.0", optional = true }
+ulid = { version = "1.2", optional = true }
+argon2 = { version = "0.5", optional = true }
+cookie = { version = "0.18.1", optional = true }
+dotenvy = { version = "0.15.7", optional = true }
+rand = { version = "0.9.1", features = ["std_rng"], optional = true }
