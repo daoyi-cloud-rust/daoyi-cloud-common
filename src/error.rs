@@ -10,7 +10,7 @@ pub enum AppError {
     #[error("internal: `{0}`")]
     Internal(String),
     #[error("salvo internal error: `{0}`")]
-    Salvo(#[from] salvo::Error),
+    Salvo(#[from] ::salvo::Error),
     #[error("http status error: `{0}`")]
     HttpStatus(#[from] StatusError),
     #[error("http parse error:`{0}`")]

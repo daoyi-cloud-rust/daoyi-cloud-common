@@ -3,8 +3,9 @@ use serde::Deserialize;
 use tracing_appender::non_blocking::WorkerGuard;
 use tracing_subscriber::fmt;
 
-use super::default_true;
 use tracing_appender::rolling;
+
+use super::default_true;
 
 const FORMAT_PRETTY: &str = "pretty";
 const FORMAT_COMPACT: &str = "compact";
@@ -59,7 +60,7 @@ impl Default for LogConfig {
         Self {
             filter_level: default_filter_level(),
             with_ansi: true,
-            stdout: true,
+            stdout: false,
             directory: default_directory(),
             file_name: default_file_name(),
             rolling: default_rolling(),
@@ -184,16 +185,6 @@ impl LogConfig {
 
         // Tracing subscriber init.
         let subscriber = tracing_subscriber::fmt()
-            // .with_timer() // 强制本地时区
-            // .with_timer(ChronoLocal::with_timezone(&chrono::FixedOffset::east(8 * 3600))) // 强制东八区
-            // .with_timer(fmt::time::OffsetTime::new(
-            //     chrono::Local::now().offset().to_owned(),
-            //     chrono::Local::now().format("%Y-%m-%d %H:%M:%S"),
-            // )) // 强制东八区
-            .with_timer(fmt::time::OffsetTime::new(
-                time::OffsetDateTime::now_local().unwrap().offset(),
-                time::format_description::well_known::Rfc3339,
-            ))
             .with_env_filter(
                 tracing_subscriber::EnvFilter::try_from_default_env()
                     .unwrap_or(tracing_subscriber::EnvFilter::new(&self.filter_level)),
@@ -203,11 +194,11 @@ impl LogConfig {
         if self.format == FORMAT_PRETTY {
             let subscriber = subscriber.event_format(
                 fmt::format()
-                    .pretty()
                     .with_timer(fmt::time::OffsetTime::new(
                         time::OffsetDateTime::now_local().unwrap().offset(),
                         time::format_description::parse("[year]-[month]-[day] [hour]:[minute]:[second].[subsecond]").unwrap(),
                     ))
+                    .pretty()
                     .with_level(self.with_level)
                     .with_target(self.with_target)
                     .with_thread_ids(self.with_thread_ids)
@@ -222,11 +213,11 @@ impl LogConfig {
         } else if self.format == FORMAT_COMPACT {
             let subscriber = subscriber.event_format(
                 fmt::format()
-                    .compact()
                     .with_timer(fmt::time::OffsetTime::new(
                         time::OffsetDateTime::now_local().unwrap().offset(),
                         time::format_description::parse("[year]-[month]-[day] [hour]:[minute]:[second].[subsecond]").unwrap(),
                     ))
+                    .compact()
                     .with_level(self.with_level)
                     .with_target(self.with_target)
                     .with_thread_ids(self.with_thread_ids)
@@ -241,11 +232,11 @@ impl LogConfig {
         } else if self.format == FORMAT_JSON {
             let subscriber = subscriber.event_format(
                 fmt::format()
-                    .json()
                     .with_timer(fmt::time::OffsetTime::new(
                         time::OffsetDateTime::now_local().unwrap().offset(),
                         time::format_description::parse("[year]-[month]-[day] [hour]:[minute]:[second].[subsecond]").unwrap(),
                     ))
+                    .json()
                     .with_level(self.with_level)
                     .with_target(self.with_target)
                     .with_thread_ids(self.with_thread_ids)

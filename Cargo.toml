@@ -1,66 +1,30 @@
 [package]
 name = "daoyi-cloud-common"
-version = "0.2.8"
+version = "0.2.9"
 edition = "2024"
 description = "Common library for Daoyi Cloud"
 license = "MIT"
 
-[features]
-# 完整功能
-full = [
-    "default",
-    "web",
-    "gateway",
-    "module-system",
-]
-# 默认功能
-default = [
-    "salvo",
-    "tokio",
-    "thiserror",
-    "anyhow",
-    "rbatis",
-    "validator",
-    "figment",
-    "serde",
-    "rbs",
-    "rbdc-mysql",
-    "jsonwebtoken",
-    "rust-embed",
-    "ulid",
-    "argon2",
-    "cookie",
-    "dotenvy",
-    "rand",
-]
-# web功能
-web = []
-# 系统管理功能
-module-system = []
-# 网关功能
-gateway = []
-# 数据库功能
-db = []
-
 [dependencies]
-salvo = { version = "0.78.0", features = ["full"], optional = true }
-tokio = { version = "1.44.2", features = ["full"], optional = true }
-tracing = { version = "0.1.41" }
-tracing-appender = { version = "0.2.3" }
-tracing-subscriber = { version = "0.3.19", features = ["std", "fmt", "env-filter", "tracing-log", "time", "local-time", "json", "chrono"] }
-thiserror = { version = "2.0.12", optional = true }
-anyhow = { version = "1.0.98", optional = true }
-rbatis = { version = "4.5.50", optional = true }
-validator = { version = "0.20.0", features = ["derive"], optional = true }
-figment = { version = "0.10.19", features = ["env", "toml"], optional = true }
-serde = { version = "1.0.219", optional = true }
-rbs = { version = "4.5.25", optional = true }
-rbdc-mysql = { version = "4.5.17", optional = true }
-time = "0.3.41"  # 时区支持库
-jsonwebtoken = { version = "9.3.1", optional = true }
-rust-embed = { version = "8.7.0", optional = true }
-ulid = { version = "1.2", optional = true }
-argon2 = { version = "0.5", optional = true }
-cookie = { version = "0.18.1", optional = true }
-dotenvy = { version = "0.15.7", optional = true }
-rand = { version = "0.9.1", features = ["std_rng"], optional = true }
+anyhow = "1.0.98"
+figment = { version = "0.10.19", features = ["env", "toml"] }
+jsonwebtoken = "9.3.1"
+rust-embed = "8.7.0"
+salvo = {version = "0.78.0", features = ["full"]}
+serde = "1.0.219"
+thiserror = "2.0"
+time = "0.3.41"
+tokio = {version = "1", features = ["full"]}
+tracing = "0.1"
+validator = {version = "0.20", features = ["derive"]}
+ulid = "1.2"
+argon2 = "0.5"
+cookie = "0.18.1"
+dotenvy = "0.15.7"
+tracing-appender ="0.2.3"
+tracing-subscriber = {version = "0.3.19", features = ["std", "fmt", "env-filter", "tracing-log", "time", "local-time", "json"]}
+rbatis = { version = "4.5"}
+rbs = { version = "4.5"}
+rbdc-mysql = { version = "4.5"}
+askama = "0.14.0"
+rand = "0.9.1"

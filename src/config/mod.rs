@@ -8,14 +8,13 @@ mod log_config;
 pub use log_config::LogConfig;
 mod db_config;
 pub use db_config::DbConfig;
-use crate::db;
 
 pub static CONFIG: OnceLock<ServerConfig> = OnceLock::new();
 
-pub async fn init(default_config: Option<ServerConfig>) {
+pub fn init() {
     let raw_config = Figment::new()
         .merge(Toml::file(
-            Env::var("APP_CONFIG").as_deref().unwrap_or("./config.toml"),
+            Env::var("APP_CONFIG").as_deref().unwrap_or("config.toml"),
         ))
         .merge(Env::prefixed("APP_").global());
 
@@ -29,15 +28,13 @@ pub async fn init(default_config: Option<ServerConfig>) {
     if config.db.url.is_empty() {
         config.db.url = std::env::var("DATABASE_URL").unwrap_or_default();
     }
-    #[cfg(feature = "db")]
     if config.db.url.is_empty() {
         eprintln!("DATABASE_URL is not set");
         std::process::exit(1);
     }
-    CONFIG
+    crate::config::CONFIG
         .set(config)
         .expect("config should be set");
-    db::init(&get().db).await;
 }
 pub fn get() -> &'static ServerConfig {
     CONFIG.get().expect("config should be set")
@@ -45,23 +42,16 @@ pub fn get() -> &'static ServerConfig {
 
 #[derive(Deserialize, Clone, Debug)]
 pub struct ServerConfig {
-    #[serde(default = "default_profile_active")]
-    pub profile_active: String,
-    
     #[serde(default = "default_listen_addr")]
     pub listen_addr: String,
 
-    #[serde(default = "default_db_config")]
     pub db: DbConfig,
-    #[serde(default)]
     pub log: LogConfig,
-    #[serde(default)]
     pub jwt: JwtConfig,
     pub tls: Option<TlsConfig>,
 }
 
 #[derive(Deserialize, Clone, Debug)]
-#[derive(Default)]
 pub struct JwtConfig {
     pub secret: String,
     pub expiry: i64,
@@ -73,10 +63,6 @@ pub struct TlsConfig {
 }
 
 #[allow(dead_code)]
-fn default_profile_active() -> String {
-    "dev".into()
-}
-#[allow(dead_code)]
 pub fn default_false() -> bool {
     false
 }
@@ -87,17 +73,4 @@ pub fn default_true() -> bool {
 
 fn default_listen_addr() -> String {
     "127.0.0.1:8008".into()
-}
-
-fn default_db_config() -> DbConfig {
-    DbConfig {
-        url: "".into(),
-        pool_size: 10,
-        min_idle: None,
-        tcp_timeout: 10000,
-        connection_timeout: 30000,
-        statement_timeout: 30000,
-        helper_threads: 10,
-        enforce_tls: false,
-    }
 }
