@@ -12,7 +12,7 @@ pub mod db;
 pub mod models;
 pub mod utils;
 pub mod hoops;
-pub mod routers;
+pub mod common_test_routers_example;
 
 pub mod error;
 pub use error::AppError;
@@ -115,7 +115,7 @@ mod tests {
         );
         config::common_init(Some(data));
 
-        let service = Service::new(crate::routers::root());
+        let service = Service::new(crate::common_test_routers_example::root());
 
         let content = TestClient::get(format!(
             "http://{}",
