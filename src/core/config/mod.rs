@@ -8,10 +8,11 @@ mod log_config;
 pub use log_config::LogConfig;
 mod db_config;
 pub use db_config::DbConfig;
+use crate::db;
 
 pub static CONFIG: OnceLock<ServerConfig> = OnceLock::new();
 
-pub fn init(default_config: Option<ServerConfig>) {
+pub async fn init(default_config: Option<ServerConfig>) {
     let raw_config = Figment::new()
         .merge(Toml::file(
             Env::var("APP_CONFIG").as_deref().unwrap_or("./config.toml"),
@@ -36,6 +37,7 @@ pub fn init(default_config: Option<ServerConfig>) {
     CONFIG
         .set(config)
         .expect("config should be set");
+    db::init(&get().db).await;
 }
 pub fn get() -> &'static ServerConfig {
     CONFIG.get().expect("config should be set")

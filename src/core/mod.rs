@@ -12,7 +12,7 @@ use crate::core::config::init;
 
 pub async fn app_init(config: Option<AppInitConfig>) -> Result<(), Box<dyn std::error::Error>> {
     // tracing_subscriber::fmt().init();
-    init(config.unwrap_or_default().config);
+    init(config.unwrap_or_default().config).await;
     let config = config::get();
     // crate::db::init(&config.db).await;
 
