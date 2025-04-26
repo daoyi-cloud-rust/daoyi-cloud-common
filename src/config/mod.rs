@@ -1,9 +1,10 @@
 use std::sync::OnceLock;
 
+pub use figment::Figment;
+pub use figment::providers::Data;
 pub use figment::providers::{Env, Format, Toml};
-use figment::{Figment, Provider};
-use figment::providers::Data;
 use serde::Deserialize;
+use tracing::{error, info};
 
 mod log_config;
 pub use log_config::LogConfig;
@@ -13,17 +14,12 @@ pub use db_config::DbConfig;
 pub static CONFIG: OnceLock<ServerConfig> = OnceLock::new();
 
 pub fn common_init(init_toml: Option<Data<Toml>>) {
-    let data = Toml::file(
-        Env::var("APP_CONFIG").as_deref().unwrap_or("config.toml"),
-    );
-    let data2 = Toml::file(
-        Env::var("APP_CONFIG").as_deref().unwrap_or("config.toml"),
-    );
+    let data = Toml::file(Env::var("APP_CONFIG").as_deref().unwrap_or("config.toml"));
+    let data2 = Toml::file(Env::var("APP_CONFIG").as_deref().unwrap_or("config.toml"));
     let raw_config = Figment::new()
         .merge(data)
         .merge(Env::prefixed("APP_").global())
         .merge(init_toml.unwrap_or(data2));
-
     let mut config = match raw_config.extract::<ServerConfig>() {
         Ok(s) => s,
         Err(e) => {
@@ -31,25 +27,30 @@ pub fn common_init(init_toml: Option<Data<Toml>>) {
             std::process::exit(1);
         }
     };
+    let _guard = config.log.guard();
+    info!("log level: {}", &config.log.filter_level);
     if config.db.url.is_empty() {
         config.db.url = std::env::var("DATABASE_URL").unwrap_or_default();
     }
     if config.db.url.is_empty() {
-        eprintln!("DATABASE_URL is not set");
+        error!("DATABASE_URL is not set");
         std::process::exit(1);
     }
-    CONFIG
-        .set(config)
-        .expect("config should be set");
+    CONFIG.set(config).expect("config should be set");
+    info!("Config loaded: {:#?}", CONFIG.get().unwrap());
 }
 pub fn get() -> &'static ServerConfig {
     CONFIG.get().expect("config should be set")
 }
 
 #[derive(Deserialize, Clone, Debug)]
-pub struct ServerConfig {
+pub struct ProfileActiveConfig {
     #[serde(default = "default_profile_active")]
     pub profile_active: String,
+}
+
+#[derive(Deserialize, Clone, Debug)]
+pub struct ServerConfig {
     #[serde(default = "default_listen_addr")]
     pub listen_addr: String,
 
