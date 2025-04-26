@@ -102,6 +102,7 @@ pub async fn shutdown_signal(handle: ServerHandle) {
 
 #[cfg(test)]
 mod tests {
+    use config::{Env, Format, Toml};
     use salvo::prelude::*;
     use salvo::test::{ResponseExt, TestClient};
 
@@ -109,7 +110,10 @@ mod tests {
 
     #[tokio::test]
     async fn test_hello_world() {
-        config::init();
+        let data = Toml::file(
+            Env::var("APP_CONFIG").as_deref().unwrap_or("config-test.toml"),
+        );
+        config::common_init(Some(data));
 
         let service = Service::new(crate::routers::root());
 

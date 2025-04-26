@@ -1,7 +1,8 @@
 use std::sync::OnceLock;
 
-use figment::providers::{Env, Format, Toml};
-use figment::Figment;
+pub use figment::providers::{Env, Format, Toml};
+use figment::{Figment, Provider};
+use figment::providers::Data;
 use serde::Deserialize;
 
 mod log_config;
@@ -11,12 +12,17 @@ pub use db_config::DbConfig;
 
 pub static CONFIG: OnceLock<ServerConfig> = OnceLock::new();
 
-pub fn init() {
+pub fn common_init(init_toml: Option<Data<Toml>>) {
+    let data = Toml::file(
+        Env::var("APP_CONFIG").as_deref().unwrap_or("config.toml"),
+    );
+    let data2 = Toml::file(
+        Env::var("APP_CONFIG").as_deref().unwrap_or("config.toml"),
+    );
     let raw_config = Figment::new()
-        .merge(Toml::file(
-            Env::var("APP_CONFIG").as_deref().unwrap_or("config.toml"),
-        ))
-        .merge(Env::prefixed("APP_").global());
+        .merge(data)
+        .merge(Env::prefixed("APP_").global())
+        .merge(init_toml.unwrap_or(data2));
 
     let mut config = match raw_config.extract::<ServerConfig>() {
         Ok(s) => s,
@@ -32,7 +38,7 @@ pub fn init() {
         eprintln!("DATABASE_URL is not set");
         std::process::exit(1);
     }
-    crate::config::CONFIG
+    CONFIG
         .set(config)
         .expect("config should be set");
 }
@@ -42,6 +48,8 @@ pub fn get() -> &'static ServerConfig {
 
 #[derive(Deserialize, Clone, Debug)]
 pub struct ServerConfig {
+    #[serde(default = "default_profile_active")]
+    pub profile_active: String,
     #[serde(default = "default_listen_addr")]
     pub listen_addr: String,
 
@@ -73,4 +81,8 @@ pub fn default_true() -> bool {
 
 fn default_listen_addr() -> String {
     "127.0.0.1:8008".into()
+}
+
+fn default_profile_active() -> String {
+    "test".into()
 }
