@@ -5,6 +5,7 @@ pub use salvo::server::ServerHandle;
 pub use serde::Serialize;
 pub use tokio::signal;
 pub use tracing::info;
+pub use tokio;
 
 pub mod config;
 pub mod db;
@@ -34,10 +35,10 @@ pub fn empty_ok() -> JsonResult<Empty> {
 //     crate::config::init();
 //     let config = crate::config::get();
 //     crate::db::init(&config.db).await;
-// 
+//
 //     let _guard = config.log.guard();
 //     tracing::info!("log level: {}", &config.log.filter_level);
-// 
+//
 //     let service = Service::new(routers::root())
 //         .catcher(Catcher::default().hoop(hoops::error_404))
 //         .hoop(hoops::cors_hoop());
