@@ -6,6 +6,7 @@ pub use serde::Serialize;
 pub use tokio;
 pub use tokio::signal;
 pub use tracing::info;
+pub use dotenvy;
 
 pub mod common_test_routers_example;
 pub mod config;
@@ -15,10 +16,10 @@ pub mod models;
 pub mod utils;
 
 pub mod error;
-pub mod redis;
-pub use redis::RedisClient;
 
 pub use error::AppError;
+pub mod redis;
+pub use redis::RedisClient;
 
 pub type AppResult<T> = Result<T, AppError>;
 pub type JsonResult<T> = Result<Json<T>, AppError>;
