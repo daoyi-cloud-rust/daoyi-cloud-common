@@ -3,18 +3,21 @@ pub use salvo::conn::rustls::{Keycert, RustlsConfig};
 pub use salvo::prelude::*;
 pub use salvo::server::ServerHandle;
 pub use serde::Serialize;
+pub use tokio;
 pub use tokio::signal;
 pub use tracing::info;
-pub use tokio;
 
+pub mod common_test_routers_example;
 pub mod config;
 pub mod db;
+pub mod hoops;
 pub mod models;
 pub mod utils;
-pub mod hoops;
-pub mod common_test_routers_example;
 
 pub mod error;
+pub mod redis;
+pub use redis::RedisClient;
+
 pub use error::AppError;
 
 pub type AppResult<T> = Result<T, AppError>;
@@ -29,51 +32,6 @@ pub struct Empty {}
 pub fn empty_ok() -> JsonResult<Empty> {
     Ok(Json(Empty {}))
 }
-
-// #[tokio::main]
-// async fn main() {
-//     crate::config::init();
-//     let config = crate::config::get();
-//     crate::db::init(&config.db).await;
-//
-//     let _guard = config.log.guard();
-//     tracing::info!("log level: {}", &config.log.filter_level);
-//
-//     let service = Service::new(routers::root())
-//         .catcher(Catcher::default().hoop(hoops::error_404))
-//         .hoop(hoops::cors_hoop());
-//     println!("🔄 在以下位置监听 {}", &config.listen_addr);
-//     //Acme 支持，自动从 Let's Encrypt 获取 TLS 证书。例子请看 https://github.com/salvo-rs/salvo/blob/main/examples/acme-http01-quinn/src/main.rs
-//     if let Some(tls) = &config.tls {
-//         let listen_addr = &config.listen_addr;
-//         println!(
-//             "📖 Open API Page: https://{}/scalar",
-//             listen_addr.replace("0.0.0.0", "127.0.0.1")
-//         );
-//         println!(
-//             "🔑 Login Page: https://{}/login",
-//             listen_addr.replace("0.0.0.0", "127.0.0.1")
-//         );
-//         let config = RustlsConfig::new(Keycert::new().cert(tls.cert.clone()).key(tls.key.clone()));
-//         let acceptor = TcpListener::new(listen_addr).rustls(config).bind().await;
-//         let server = Server::new(acceptor);
-//         tokio::spawn(shutdown_signal(server.handle()));
-//         server.serve(service).await;
-//     } else {
-//         println!(
-//             "📖 Open API 页面: http://{}/scalar",
-//             config.listen_addr.replace("0.0.0.0", "127.0.0.1")
-//         );
-//         println!(
-//             "🔑 Login Page: http://{}/login",
-//             config.listen_addr.replace("0.0.0.0", "127.0.0.1")
-//         );
-//         let acceptor = TcpListener::new(&config.listen_addr).bind().await;
-//         let server = Server::new(acceptor);
-//         tokio::spawn(shutdown_signal(server.handle()));
-//         server.serve(service).await;
-//     }
-// }
 
 pub async fn shutdown_signal(handle: ServerHandle) {
     let ctrl_c = async {
@@ -110,8 +68,11 @@ mod tests {
 
     #[tokio::test]
     async fn test_hello_world() {
+        let profile = Env::var("APP_PROFILE").unwrap_or_else(|| "test".to_string());
         let data = Toml::file(
-            Env::var("APP_CONFIG").as_deref().unwrap_or("config-test.toml"),
+            Env::var("APP_CONFIG")
+                .as_deref()
+                .unwrap_or(format!("config-{}.toml", profile).as_str()),
         );
         config::common_init(Some(data));
 

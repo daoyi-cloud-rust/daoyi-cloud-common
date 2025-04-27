@@ -9,7 +9,10 @@ use tracing::{error, info};
 mod log_config;
 pub use log_config::LogConfig;
 mod db_config;
+mod redis_config;
+
 pub use db_config::DbConfig;
+pub use redis_config::RedisConfig;
 
 pub static CONFIG: OnceLock<ServerConfig> = OnceLock::new();
 
@@ -58,6 +61,7 @@ pub struct ServerConfig {
     pub log: LogConfig,
     pub jwt: JwtConfig,
     pub tls: Option<TlsConfig>,
+    pub redis: RedisConfig,
 }
 
 #[derive(Deserialize, Clone, Debug)]
