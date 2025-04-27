@@ -1,3 +1,7 @@
+pub use askama;
+pub use dotenvy;
+pub use rust_embed;
+pub use salvo;
 pub use salvo::catcher::Catcher;
 pub use salvo::conn::rustls::{Keycert, RustlsConfig};
 pub use salvo::prelude::*;
@@ -6,12 +10,11 @@ pub use serde::Serialize;
 pub use tokio;
 pub use tokio::signal;
 pub use tracing::info;
-pub use dotenvy;
 
 pub mod common_test_routers_example;
 pub mod config;
 pub mod db;
-pub mod hoops;
+pub mod common_hoops;
 pub mod models;
 pub mod utils;
 

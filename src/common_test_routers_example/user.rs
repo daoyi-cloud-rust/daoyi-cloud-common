@@ -6,7 +6,7 @@ use salvo::prelude::*;
 use serde::{Deserialize, Serialize};
 use ulid::Ulid;
 use validator::Validate;
-use crate::hoops::jwt;
+use crate::common_hoops::jwt;
 
 use crate::models::{SafeUser, User};
 use crate::{db, empty_ok, json_ok, utils, AppResult, EmptyResult, JsonResult};
