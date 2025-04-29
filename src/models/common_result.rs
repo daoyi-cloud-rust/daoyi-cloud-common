@@ -1,11 +1,14 @@
 use salvo::oapi;
 use salvo::prelude::*;
 use serde::Serialize;
-
+/// 通用返回结果
 #[derive(Serialize, Clone, Debug)]
 pub struct CommonResult<T> {
+    /// 返回码
     pub code: i32,
+    /// 返回信息
     pub msg: String,
+    /// 返回数据
     pub data: Option<T>,
 }
 
