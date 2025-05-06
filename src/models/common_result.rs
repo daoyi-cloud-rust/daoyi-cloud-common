@@ -47,8 +47,12 @@ where
         res.render(Json(self));
     }
 }
-impl<T> oapi::ToResponse for CommonResult<T> {
+impl<T> oapi::ToResponse for CommonResult<T>
+where
+    T: oapi::ToSchema,
+{
     fn to_response(components: &mut oapi::Components) -> oapi::RefOr<oapi::Response> {
+        let schema_ref = T::to_schema(components);
         let response = oapi::Response::new("CommonResult response returns CommonResult entity")
             .add_content(
                 "application/json",
@@ -57,6 +61,7 @@ impl<T> oapi::ToResponse for CommonResult<T> {
                         .property(
                             "code",
                             oapi::Object::new()
+                                .description("返回码")
                                 .schema_type(oapi::schema::SchemaType::basic(
                                     oapi::schema::BasicType::Integer,
                                 ))
@@ -67,17 +72,15 @@ impl<T> oapi::ToResponse for CommonResult<T> {
                         .property(
                             "msg",
                             oapi::Object::new()
+                                .description("返回信息")
                                 .schema_type(oapi::schema::SchemaType::basic(
-                                    oapi::schema::BasicType::Integer,
+                                    oapi::schema::BasicType::String,
                                 ))
                                 .format(oapi::SchemaFormat::KnownFormat(oapi::KnownFormat::String))
                                 .example("success"),
                         )
                         .required("msg")
-                        .property(
-                            "data",
-                            oapi::Object::new().schema_type(oapi::schema::SchemaType::any()),
-                        ),
+                        .property("data", schema_ref),
                 ),
             );
         components.responses.insert("CommonResult", response);
@@ -87,7 +90,10 @@ impl<T> oapi::ToResponse for CommonResult<T> {
         )))
     }
 }
-impl<T> EndpointOutRegister for CommonResult<T> {
+impl<T> EndpointOutRegister for CommonResult<T>
+where
+    T: oapi::ToSchema,
+{
     fn register(components: &mut oapi::Components, operation: &mut oapi::Operation) {
         operation
             .responses
