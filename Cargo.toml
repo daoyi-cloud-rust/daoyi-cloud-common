@@ -1,6 +1,6 @@
 [package]
 name = "daoyi-cloud-common"
-version = "0.3.6"
+version = "0.3.7"
 edition = "2024"
 description = "Common library for Daoyi Cloud"
 license = "MIT"
@@ -12,20 +12,20 @@ jsonwebtoken = "9.3.1"
 rust-embed = "8.7.1"
 salvo = { version = "0.78.0", features = ["full"] }
 serde = "1.0.219"
-thiserror = "2.0"
+thiserror = "2.0.12"
 time = "0.3.41"
-tokio = { version = "1", features = ["full"] }
-tracing = "0.1"
+tokio = { version = "1.45.0", features = ["full"] }
+tracing = "0.1.41"
 validator = { version = "0.20", features = ["derive"] }
-ulid = "1.2"
-argon2 = "0.5"
+ulid = "1.2.1"
+argon2 = "0.5.3"
 cookie = "0.18.1"
 dotenvy = "0.15.7"
 tracing-appender = "0.2.3"
 tracing-subscriber = { version = "0.3.19", features = ["std", "fmt", "env-filter", "tracing-log", "time", "local-time", "json"] }
-rbatis = { version = "4.5" }
-rbs = { version = "4.5" }
-rbdc-mysql = { version = "4.5" }
+rbatis = { version = "4.5.51" }
+rbs = { version = "4.5.25" }
+rbdc-mysql = { version = "4.5.17" }
 askama = "0.14.0"
 rand = "0.9.1"
 deadpool-redis = "0.20.0"
